@@ -2,7 +2,7 @@
 #include <string>
 using namespace std;
 
-const string username = "Evrilia";
+const string username = "Admin";
 const int password = 123456;
 
 #define MAX 200
@@ -240,14 +240,14 @@ int main()
 
     do
     {
-        cout << "------------ .:. Program Parkir Kendaraan .:. -----------" << endl;
+        cout << "------------ PROGRAM PARKIR TELYUB -----------" << endl;
         cout << endl;
         cout << "---------------------------------------------------------" << endl;
         cout << "| Menu:\t\t\t\t\t\t\t|" << endl;
-        cout << "| 1. Input Data\t\t\t\t\t\t|" << endl;
-        cout << "| 2. View Data\t\t\t\t\t\t|" << endl;
-        cout << "| 3. Keluarkan Kendaraan Dari Parkiran\t\t\t|" << endl;
-        cout << "| 4. Urutkan Data Lama Parkir\t\t\t\t|" << endl;
+        cout << "| 1. Kendaraan Masuk\t\t\t\t\t\t|" << endl;
+        cout << "| 2. Lihat Kendaraan\t\t\t\t\t\t|" << endl;
+        cout << "| 3. Kendaraan Keluar\t\t\t|" << endl;
+        cout << "| 4. Data Berdasarkan Lama Parkir\t\t\t\t|" << endl;
         cout << "| 5. Cari Kendaraan (Plat Nomor)\t\t\t|" << endl;
         cout << "| 6. Keluar\t\t\t\t\t\t|" << endl;
         cout << "---------------------------------------------------------" << endl;
@@ -265,8 +265,6 @@ int main()
             }
             else
             {
-                cout << ".:. Input Data Kendaraan .:." << endl;
-                cout << endl;
                 cout << "Tipe Kendaraan: " << endl;
                 cout << "1. Mobil | Biaya: Rp. 4000 / jam" << endl;
                 cout << "2. Motor | Biaya: Rp. 2000 / jam" << endl;
