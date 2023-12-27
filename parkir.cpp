@@ -4,13 +4,13 @@ using namespace std;
 
 const string username = "Admin";
 const int password = 123456;
-
-#define MAX 200
+const int MAX = 200;
 
 struct Kendaraan
 {
     string platNomor[MAX];
     string tipeKendaraan[MAX];
+    string jamMasuk[MAX];
     int lamaParkir[MAX];
     int id[MAX];
     int awal = 0, akhir = 0;
@@ -34,33 +34,46 @@ bool parkiranPenuh()
 
 void inputData(int jmlKendaraan)
 {
-    string temp1;
-    int temp2, type;
-    cin.ignore();
+    string temp1, temp2; // Variabel sementara untuk menyimpan plat nomor kendaraan
+    int type;            // Variabel sementara untuk menyimpan jam masuk dan tipe kendaraan
+
+    cout << "Masukkan Jumlah Kendaraan: ";
+    cin >> jmlKendaraan;
+
+    // membersihkan layar terminal
+    system("cls");
     for (int i = 0; i < jmlKendaraan && antrean.akhir < MAX; i++)
     {
-        cout << "Antrean Nomor [" << antrean.akhir + 1 << "]" << endl;
-        cout << "Masukkan tipe kendaraan (1 untuk Mobil, 2 untuk Motor): ";
-        cin >> type;
+        cout << "\nAntrean Nomor [" << antrean.akhir + 1 << "]" << endl; // Menampilkan nomor antrean
+        cout << "-------------------------------" << endl;
+        cout << "Tarif Kendaraan" << endl;
+        cout << "1. Mobil | Biaya: Rp. 4000 / jam" << endl;
+        cout << "2. Motor | Biaya: Rp. 2000 / jam" << endl;
+        cout << "-------------------------------" << endl;
+        cout << endl;
+        cout << "Masukkan tipe kendaraan: ";
+        cin >> type; // Mengambil input tipe kendaraan dari pengguna
 
         if (type == 1)
             antrean.tipeKendaraan[antrean.akhir] = "Mobil";
         else if (type == 2)
             antrean.tipeKendaraan[antrean.akhir] = "Motor";
 
-        cin.ignore();
-        cout << "Masukkan plat nomor: ";
-        cin >> temp1;
-        cout << "Masukkan lama parkir (jam): ";
-        cin >> temp2;
+        cout << "Plat Nomor: ";
+        cin >> temp1; // Mengambil input plat nomor kendaraan dari pengguna
+        cout << "Jam: ";
+        cin >> temp2; // Mengambil input jam masuk kendaraan dari pengguna
 
+        // Menyimpan plat nomor kendaraan pada indeks tertentu di dalam array
         antrean.platNomor[antrean.akhir] = temp1;
         antrean.id[antrean.akhir] = antrean.akhir;
-        antrean.lamaParkir[antrean.akhir] = temp2;
+        antrean.jamMasuk[antrean.akhir] = temp2;
         antrean.akhir++;
 
         cout << "Berhasil menambahkan data." << endl;
         cout << endl;
+        // membersihkan layar terminal
+        system("cls");
     }
 }
 
@@ -68,13 +81,16 @@ void cekKendaraan()
 {
     for (int i = antrean.awal; i < antrean.akhir; i++)
     {
-        cout << "Antrean Kendaraan Nomor [" << antrean.id[i] + 1 << "]" << endl;
+        // Menampilkan informasi kendaraan dalam antrian
+        cout << "Antrean Kendaraan Nomor: " << antrean.id[i] + 1 << endl;
         cout << "Tipe Kendaraan\t: " << antrean.tipeKendaraan[i] << endl;
         cout << "Plat Nomor\t: " << antrean.platNomor[i] << endl;
-        cout << "Lama Parkir\t: " << antrean.lamaParkir[i] << " jam | Biaya: Rp. ";
-        cout << (antrean.tipeKendaraan[i] == "Mobil" ? antrean.lamaParkir[i] * 4000 : antrean.lamaParkir[i] * 2000) << endl;
-        cout << endl;
+        cout << "Jam\t\t: " << antrean.jamMasuk[i] << endl;
     }
+    // press enter to continue
+    cout << "Tekan Enter untuk melanjutkan...";
+    cin.ignore();
+    cin.get();
 }
 
 void kendaraanKeluar(const string &user)
@@ -82,85 +98,120 @@ void kendaraanKeluar(const string &user)
     if (cekKosong())
     {
         cout << "Silahkan input kendaraan terlebih dahulu!" << endl;
+        cout << "Tekan Enter untuk melanjutkan...";
+        cin.ignore();
+        cin.get();
         return;
     }
 
     string platKendaraan;
     cout << "Masukkan plat kendaraan yang keluar: ";
-    cin.ignore();
     cin >> platKendaraan;
 
+    system("cls");
+
     int index;
+    bool kendaraanDitemukan = false;
     for (index = antrean.awal; index < antrean.akhir; index++)
     {
         if (antrean.platNomor[index] == platKendaraan)
+        {
+            kendaraanDitemukan = true;
             break;
+        }
     }
 
-    if (index == antrean.akhir)
+    if (!kendaraanDitemukan)
     {
         cout << "Kendaraan dengan plat nomor " << platKendaraan << " tidak ditemukan!" << endl;
+        cout << "Tekan Enter untuk melanjutkan...";
+        cin.ignore();
+        cin.get();
         return;
     }
 
-    cout << "Kendaraan dengan plat nomor " << platKendaraan << " berhasil keluar." << endl;
+    int lamaParkirBaru;
+    cout << "Masukkan lama parkir kendaraan (jam): ";
+    cin >> lamaParkirBaru;
 
-    char pilihan;
-    cout << "Apakah Anda ingin mencetak struk? (y/n): ";
-    cin >> pilihan;
+    antrean.lamaParkir[index] = lamaParkirBaru;
 
-    if (pilihan == 'y' || pilihan == 'Y')
-    {
-        cout << "-------------------------------" << endl;
-        cout << "         STRUK PARKIR" << endl;
-        cout << "-------------------------------" << endl;
-        cout << "User           : " << user << endl;
-        cout << "Tipe Kendaraan: " << antrean.tipeKendaraan[index] << endl;
-        cout << "Plat Nomor     : " << antrean.platNomor[index] << endl;
-        cout << "Lama Parkir    : " << antrean.lamaParkir[index] << " jam" << endl;
-        cout << "Biaya Parkir   : Rp. " << (antrean.tipeKendaraan[index] == "Mobil" ? antrean.lamaParkir[index] * 4000 : antrean.lamaParkir[index] * 2000) << endl;
-        cout << "--------------------------" << endl;
-    }
+    // Menyimpan data lama parkir dan menghitung biaya parkir
+    int biayaParkir = (antrean.tipeKendaraan[index] == "Mobil") ? lamaParkirBaru * 4000 : lamaParkirBaru * 2000;
 
-    // Menggeser data kendaraan setelah kendaraan keluar
+    // Menyimpan data struk parkir sebelum menggeser elemen array
+    string platNomor = antrean.platNomor[index];
+    string tipeKendaraan = antrean.tipeKendaraan[index];
+    string jamMasuk = antrean.jamMasuk[index];
+
+    // Menggeser elemen array setelah kendaraan keluar
     for (int i = index; i < antrean.akhir - 1; i++)
     {
-        antrean.platNomor[i] = antrean.platNomor[i + 1];
         antrean.tipeKendaraan[i] = antrean.tipeKendaraan[i + 1];
+        antrean.platNomor[i] = antrean.platNomor[i + 1];
+        antrean.jamMasuk[i] = antrean.jamMasuk[i + 1];
         antrean.lamaParkir[i] = antrean.lamaParkir[i + 1];
-        antrean.id[i] = antrean.id[i + 1];
     }
-    antrean.akhir--;
+
+    antrean.akhir--; // Mengurangi jumlah kendaraan yang terdaftar
+
+    system("cls");
+    cout << "Kendaraan dengan plat nomor " << platKendaraan << " berhasil keluar." << endl;
+    cout << "---------------------------------" << endl;
+    cout << "           STRUK PARKIR" << endl;
+    cout << "---------------------------------" << endl;
+    cout << "|User           : " << user << "\t\t|" << endl;
+    cout << "|Tipe Kendaraan : " << tipeKendaraan << "\t\t|" << endl;
+    cout << "|Plat Nomor     : " << platNomor << "\t|" << endl;
+    cout << "|Jam Masuk      : " << jamMasuk << "\t\t|" << endl;
+    cout << "|Lama Parkir    : " << lamaParkirBaru << " jam"
+         << "\t\t|" << endl;
+    cout << "|Biaya Parkir   : Rp. " << biayaParkir << "\t|" << endl;
+    cout << "---------------------------------" << endl;
+    cout << "Tekan Enter untuk melanjutkan...";
+    cin.ignore();
+    cin.get();
 }
 
-void sortlamaParkir()
+void sortJamMasuk()
 {
-    string temp1;
-    int temp2;
-    for (int i = antrean.awal; i < antrean.akhir; i++)
-    {
-        for (int j = i + 1; j < antrean.akhir; j++)
-        {
-            if (antrean.lamaParkir[j] < antrean.lamaParkir[i])
-            {
-                temp1 = antrean.platNomor[i];
-                antrean.platNomor[i] = antrean.platNomor[j];
-                antrean.platNomor[j] = temp1;
+    string temp;
+    string tempPlat;
+    string tempTipe;
 
-                temp2 = antrean.lamaParkir[i];
-                antrean.lamaParkir[i] = antrean.lamaParkir[j];
-                antrean.lamaParkir[j] = temp2;
+    for (int i = antrean.awal; i < antrean.akhir - 1; i++)
+    {
+        for (int j = antrean.awal; j < antrean.akhir - i - 1; j++)
+        {
+            if (antrean.jamMasuk[j] > antrean.jamMasuk[j + 1])
+            {
+                // Menukar jamMasuk
+                temp = antrean.jamMasuk[j];
+                antrean.jamMasuk[j] = antrean.jamMasuk[j + 1];
+                antrean.jamMasuk[j + 1] = temp;
+
+                // Menukar platNomor
+                tempPlat = antrean.platNomor[j];
+                antrean.platNomor[j] = antrean.platNomor[j + 1];
+                antrean.platNomor[j + 1] = tempPlat;
+
+                // Menukar tipeKendaraan
+                tempTipe = antrean.tipeKendaraan[j];
+                antrean.tipeKendaraan[j] = antrean.tipeKendaraan[j + 1];
+                antrean.tipeKendaraan[j + 1] = tempTipe;
             }
         }
     }
 }
 
-void cariKendaraan(string cari)
+void cariKendaraan(string cari) // sequential search
 {
+    system("cls"); // Membersihkan layar terminal
     int ind[MAX];
     int j = 0;
     bool ditemukan = false;
 
+    // Mencari kendaraan berdasarkan nomor plat
     for (int i = antrean.awal; i < antrean.akhir; i++)
     {
         if (antrean.platNomor[i] == cari)
@@ -173,6 +224,7 @@ void cariKendaraan(string cari)
 
     if (ditemukan)
     {
+        // Menampilkan data kendaraan yang ditemukan
         cout << "Plat Nomor Kendaraan " << cari << " Ditemukan" << endl;
         cout << "Data kendaraan yang ditemukan:" << endl;
         for (int k = 0; k < j; k++)
@@ -181,29 +233,32 @@ void cariKendaraan(string cari)
             cout << "-----------------------------------" << endl;
             cout << "Nomor Plat     : " << antrean.platNomor[index] << endl;
             cout << "Tipe Kendaraan : " << antrean.tipeKendaraan[index] << endl;
-            cout << "Lama Parkir    : " << antrean.lamaParkir[index] << " jam" << endl;
+            cout << "Jam            : " << antrean.jamMasuk[index] << endl;
             cout << "-----------------------------------" << endl;
         }
+        // press enter to continue
+        cout << "Tekan Enter untuk melanjutkan...";
+        cin.ignore();
+        cin.get();
     }
     else
     {
+        // Menampilkan pesan jika data tidak ditemukan
         cout << "Data tidak ditemukan!" << endl;
     }
 }
 
-void clearData()
-{
-    antrean.akhir = 0;
-}
-
 int main()
 {
+    system("cls"); // Membersihkan layar terminal
     int jmlKendaraan, pil;
     string cari;
-    init();
 
+    init(); // Memanggil fungsi init untuk inisialisasi
+
+    // Tampilan awal program parkir
     cout << "=========================================" << endl;
-    cout << " PROGRAM PARKIR TELYUB " << endl;
+    cout << "\tPROGRAM PARKIR TELYUP" << endl;
     cout << "=========================================" << endl;
     cout << "Silahkan Login" << endl;
 
@@ -218,10 +273,10 @@ int main()
         cout << "Password : ";
         cin >> pass;
 
+        // Verifikasi username dan password
         if (username == user && password == pass)
         {
-            cout << "\nSelamat Bekerja " << user << endl;
-            cout << "=========================================" << endl;
+            cout << "\nSelamat Bekerja " << user << "!!!" << endl;
             break;
         }
         else
@@ -229,99 +284,122 @@ int main()
             cout << "Username dan Password Keliru" << endl;
             coba--;
             cout << "\nSisa Kesempatan Login : " << coba << endl;
+
+            // Akun terblokir jika percobaan login melebihi 3 kali
             if (coba == 0)
             {
                 cout << "Akun Anda Terblokir" << endl;
-                cout << "=========================================" << endl;
                 return 0;
             }
         }
     }
 
+    // Menu utama program parkir
     do
     {
-        cout << "------------ PROGRAM PARKIR TELYUB -----------" << endl;
-        cout << endl;
-        cout << "---------------------------------------------------------" << endl;
-        cout << "| Menu:\t\t\t\t\t\t\t|" << endl;
-        cout << "| 1. Kendaraan Masuk\t\t\t\t\t\t|" << endl;
-        cout << "| 2. Lihat Kendaraan\t\t\t\t\t\t|" << endl;
+        system("cls"); // Membersihkan layar terminal
+        cout << "\n--------- PROGRAM PARKIR TELYUP ---------" << endl;
+        // Menampilkan menu pilihan
+        cout << "| Menu:\t\t\t\t\t|" << endl;
+        cout << "| 1. Kendaraan Masuk\t\t\t|" << endl;
+        cout << "| 2. Lihat Kendaraan\t\t\t|" << endl;
         cout << "| 3. Kendaraan Keluar\t\t\t|" << endl;
-        cout << "| 4. Data Berdasarkan Lama Parkir\t\t\t\t|" << endl;
-        cout << "| 5. Cari Kendaraan (Plat Nomor)\t\t\t|" << endl;
-        cout << "| 6. Keluar\t\t\t\t\t\t|" << endl;
-        cout << "---------------------------------------------------------" << endl;
+        cout << "| 4. Data Berdasarkan Jam Masuk\t\t|" << endl;
+        cout << "| 5. Cari Kendaraan (Plat Nomor)\t|" << endl;
+        cout << "| 6. Keluar\t\t\t\t|" << endl;
+        cout << "-----------------------------------------" << endl;
         cout << endl;
 
         cout << "Masukan pilihan: ";
-        cin >> pil;
+        cin >> pil; // Meminta input pilihan menu
 
+        // Melakukan aksi sesuai dengan pilihan menu yang dimasukkan
         switch (pil)
         {
         case 1:
+            // Memeriksa apakah parkiran sudah penuh atau belum
             if (parkiranPenuh())
             {
-                cout << "Parkiran Sudah Penuh!" << endl;
+                // membersihkan layar terminal
+                system("cls");
+                cout << "\nParkiran Sudah Penuh!" << endl;
             }
             else
             {
-                cout << "Tipe Kendaraan: " << endl;
-                cout << "1. Mobil | Biaya: Rp. 4000 / jam" << endl;
-                cout << "2. Motor | Biaya: Rp. 2000 / jam" << endl;
-                cout << endl;
-                cout << "Masukkan Jumlah Kendaraan: ";
-                cin >> jmlKendaraan;
-                cout << endl;
-                inputData(jmlKendaraan);
+                // membersihkan layar terminal
+                system("cls");
+                inputData(jmlKendaraan); // Memasukkan data kendaraan
             }
             break;
         case 2:
+            // Memeriksa apakah tidak ada data kendaraan yang dimasukkan
             if (cekKosong())
             {
-                cout << "Silahkan input kendaraan terlebih dahulu!" << endl;
+                // membersihkan layar terminal
+                system("cls");
+                cout << "\nSilahkan input kendaraan terlebih dahulu!" << endl;
             }
             else
             {
-                cout << "\t.:. Daftar Kendaraan .:." << endl;
-                cout << endl;
-                cekKendaraan();
+                // membersihkan layar terminal
+                system("cls");
+                cout << "\n\t~~Daftar Kendaraan~~" << endl;
+                cekKendaraan(); // Menampilkan data kendaraan
             }
             break;
         case 3:
+            // Memeriksa apakah tidak ada data kendaraan yang dimasukkan
             if (cekKosong())
             {
-                cout << "Silahkan input kendaraan terlebih dahulu!" << endl;
+                // membersihkan layar terminal
+                system("cls");
+                cout << "\nSilahkan input kendaraan terlebih dahulu!" << endl;
             }
             else
             {
-                kendaraanKeluar(username);
+                // membersihkan layar terminal
+                system("cls");
+                kendaraanKeluar(username); // Memproses kendaraan yang keluar
             }
-            cekKendaraan();
+            // cekKendaraan();
             break;
         case 4:
+            // Memeriksa apakah tidak ada data kendaraan yang dimasukkan
             if (cekKosong())
             {
-                cout << "Silahkan input Kendaraan terlebih dahulu!" << endl;
+                // membersihkan layar terminal
+                system("cls");
+                cout << "\nSilahkan input Kendaraan terlebih dahulu!" << endl;
             }
             else
             {
-                sortlamaParkir();
+                // membersihkan layar terminal
+                system("cls");
+                sortJamMasuk(); // Mengurutkan data kendaraan berdasarkan jam masuk
             }
             cekKendaraan();
             break;
+
         case 5:
-            cout << "Masukan plat kendaraan yang ingin dicari: ";
+            // membersihkan layar terminal
+            system("cls");
+            // Meminta input plat nomor untuk mencari kendaraan
+            cout << "\nMasukan plat kendaraan yang ingin dicari: ";
             cin >> cari;
-            cariKendaraan(cari);
+            cariKendaraan(cari); // Melakukan pencarian kendaraan berdasarkan plat nomor
             break;
         case 6:
-            cout << "Keluar Dari Program..." << endl;
+            // membersihkan layar terminal
+            system("cls");
+            cout << "\nKeluar Dari Program..." << endl;
             break;
         default:
-            cout << "Masukkan pilihan sesuai di menu!" << endl;
+            // membersihkan layar terminal
+            system("cls");
+            cout << "\nMasukkan pilihan sesuai di menu!" << endl;
             break;
         }
-    } while (pil != 6);
+    } while (pil != 6); // Program berjalan hingga pilihan menu 6 (Keluar)
 
     return 0;
 }
